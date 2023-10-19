@@ -1,6 +1,8 @@
 package tn.esprit.nascar
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -24,7 +26,9 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //TODO 4 Create a val mSharedPreferences and initialise it
-
+         val mSharedPreferences: SharedPreferences by lazy {
+            getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE)
+        }
 
         binding.tiEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -55,11 +59,21 @@ class LoginActivity : AppCompatActivity() {
         })
 
         //TODO 5 Check if the user is already authenticated and navigate to MainActivity
+        if(mSharedPreferences.getBoolean(IS_REMEMBERED, false)){
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
 
         binding.btnLogin.setOnClickListener {
             if (validateEmail() && validatePassword()){
                 //TODO 6 Check if the rememberMe is true then save all the data in the mSharedPreferences
-
+                if(binding.btnRememberMe.isChecked){
+                    mSharedPreferences.edit().apply {
+                        putString(EMAIL, binding.tiEmail.text.toString())
+                        putString(PASSWORD, binding.tiPassword.text.toString())
+                        putBoolean(IS_REMEMBERED, binding.btnRememberMe.isChecked)
+                    }.apply()
+                }
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }else{

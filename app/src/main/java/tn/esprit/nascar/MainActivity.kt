@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                 builder.setMessage("Are you sure you want to logout ?")
                 builder.setPositiveButton("Yes"){ _, _ ->
                     //TODO 7 Clear the mSharedPreferences file
-
+                    getSharedPreferences(PREF_FILE, MODE_PRIVATE).edit().clear().apply()
                     finish()
                 }
                 builder.setNegativeButton("No"){dialogInterface, _ ->
